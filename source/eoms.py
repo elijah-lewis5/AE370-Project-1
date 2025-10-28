@@ -1,25 +1,22 @@
 import numpy as np
 from sympy import *
 
-#def skycrane(u):
- #   return None
+def skycrane(u, constants):
+    x, xdot, theta, thetadot = u 
+    m1 = 5
+    m2 = 2
+    l = 1
+    g = 9.81
+    m1, m2, l, g = constants
 
-m1 = 5
-m2 = 2
-l = 1
-g = 9.81
+    A = Matrix([[m1+m2, m2*l*cos(theta)],
+                [cos(theta)/l, 1]])
+    B = Matrix([[m2*l*thetadot**2*sin(theta)],
+                [-g/l * sin(theta)]])
 
-theta_0 = 0
-x_0 = 0
-
-theta, x, thetadot = symbols('theta x thetadot')
-
-A = Matrix([[m1+m2, m2*l*cos(theta)],
-            [cos(theta)/l, 1]])
-B = Matrix([[m2*l*thetadot**2*sin(theta)],
-            [-g/l * sin(theta)]])
-
-O = A.inv() @ B
-xdd = O[0]
-thetadd = O[1]
+    O = A.inv() @ B
+    xddot = O[0]
+    thetaddot = O[1]
+    udot = np.array([xdot, xddot, thetadot, thetaddot])
+    return udot
 
