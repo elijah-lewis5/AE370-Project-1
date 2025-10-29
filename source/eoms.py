@@ -5,10 +5,6 @@ from data.initial_conditions import constants
 
 def skycrane(u):
     x, xdot, theta, thetadot = u 
-    m1 = 5
-    m2 = 2
-    l = 1
-    g = 9.81
     m1, m2, l, k, b, g = constants
 
     A = Matrix([[m1+m2, m2*l*cos(theta)],
@@ -24,10 +20,6 @@ def skycrane(u):
 
 def skycrane_damping(u):
     x, xdot, theta, thetadot = u 
-    m1 = 5
-    m2 = 2
-    l = 1
-    g = 9.81
     m1, m2, l, k, b, g = constants
 
     A = Matrix([[m1+m2, m2*l*cos(theta)],
