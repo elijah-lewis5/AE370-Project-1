@@ -74,10 +74,5 @@ def ab3_solve(f, u0, t_grid):
     #compute new derivative
     f_vals[k+1] = f(U[k+1], t_grid[k+1])
 
-    #check if we hit the ground (compare plots before and after adding this)
-    if U[k+1, 1] < 0.1: #make it 0.1 just to prevent small portions going below 0
-      U = U[:k+2]
-      t_sub = t_grid[:k+2]
-      return U, t_sub
-
+    
   return U, t_grid
