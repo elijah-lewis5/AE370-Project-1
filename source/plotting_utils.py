@@ -152,3 +152,28 @@ def plot_x_theta(t, u, title="Cart Position and Pendulum Angle vs Time"):
     plt.grid(True, which="both", linestyle="--", alpha=0.6)
     plt.tight_layout()
     plt.show()
+
+def plot_x_vs_theta(u, t=None, title=''):
+    """
+    Compare simple and time-colored x vs θ plots.
+    
+    Parameters
+    ----------
+    u : ndarray
+        Array of shape (N, 4): [x, x_dot, theta, theta_dot].
+    t : ndarray, optional
+        Time array of shape (N,). Used for coloring trajectory by time.
+    """
+    x = u[:, 0]
+    theta = u[:, 2]
+
+    plt.figure(figsize=(6, 5))
+
+    plt.subplot(1, 1, 1)
+    plt.plot(x, theta, 'b-', linewidth=2)
+    plt.title(f"x vs θ ({title})")
+    plt.xlabel("x (position)")
+    plt.ylabel("θ (angle)")
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()
