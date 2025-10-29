@@ -1,6 +1,6 @@
 import numpy as np
 
-def euler_forward(f, u0, dt, t_final):
+def euler_forward(f, u0,constants, dt, t_final):
     """
     Integrate u_dot = f(u) from t=0 to t_final using Euler Forward.
 
@@ -32,7 +32,7 @@ def euler_forward(f, u0, dt, t_final):
 
     # Time stepping loop
     for n in range(n_steps - 1):
-        u_dot = f(u[n])
+        u_dot = f(u[n], constants)
         u[n + 1] = u[n] + dt * u_dot
 
     return t, u
@@ -74,5 +74,6 @@ def ab3_solve(f, u0, t_grid):
     #compute new derivative
     f_vals[k+1] = f(U[k+1], t_grid[k+1])
 
-    
+
   return U, t_grid
+
