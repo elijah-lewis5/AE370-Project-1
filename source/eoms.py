@@ -1,7 +1,9 @@
 import numpy as np
 from sympy import *
 
-def skycrane(u, constants):
+from data.initial_conditions import constants
+
+def skycrane(u):
     x, xdot, theta, thetadot = u 
     m1 = 5
     m2 = 2
@@ -20,7 +22,7 @@ def skycrane(u, constants):
     udot = np.array([xdot, xddot, thetadot, thetaddot])
     return udot
 
-def skycrane_damping(u, constants):
+def skycrane_damping(u):
     x, xdot, theta, thetadot = u 
     m1 = 5
     m2 = 2

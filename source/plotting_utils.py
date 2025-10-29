@@ -87,3 +87,10 @@ def animate_skycrane(t, u, constants, skip=10, save_path=None):
         plt.show()
 
     return ani
+
+def plot_x_theta(t, u):
+    plt.plot(t, u[:,0], label="x(t)")
+    plt.plot(t, u[:,2], label="theta(t)")
+    plt.legend()
+    plt.show()
+    return
