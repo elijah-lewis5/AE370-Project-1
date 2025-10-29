@@ -88,9 +88,26 @@ def animate_skycrane(t, u, constants, skip=10, save_path=None):
 
     return ani
 
-def plot_x_theta(t, u):
-    plt.plot(t, u[:,0], label="x(t)")
-    plt.plot(t, u[:,2], label="theta(t)")
+def plot_x_theta(t, u, title="Cart Position and Pendulum Angle vs Time"):
+    """
+    Plot cart position x(t) and pendulum angle θ(t) vs time.
+
+    Parameters
+    ----------
+    t : ndarray
+        Time array [s]
+    u : ndarray
+        State array [x, xdot, theta, thetadot] over time
+    title : str, optional
+        Plot title
+    """
+    plt.figure(figsize=(8, 4))
+    plt.plot(t, u[:, 0], label="x(t) [m]", linewidth=2)
+    plt.plot(t, u[:, 2], label="θ(t) [rad]", linewidth=2)
+    plt.xlabel("Time [s]")
+    plt.ylabel("State Variables")
+    plt.title(title)
     plt.legend()
+    plt.grid(True, which="both", linestyle="--", alpha=0.6)
+    plt.tight_layout()
     plt.show()
-    return
