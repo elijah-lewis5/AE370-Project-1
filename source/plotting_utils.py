@@ -1,8 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
+from data.initial_conditions import constants
 
-def animate_skycrane(t, u, constants, skip=10, save_path=None):
+def animate_skycrane(t, u, skip=10, save_path=None):
     """
     Animate the Sky Crane (cart-pendulum with spring).
 
