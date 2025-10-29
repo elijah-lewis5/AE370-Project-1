@@ -1,9 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
+import matplotlib.patches as patches
 from data.initial_conditions import constants
 
-def animate_skycrane(t, u, skip=10, save_path=None):
+def animate_skycrane(t, u, dt, skip = 10, save_path=None, title = ''):
     """
     Animate the Sky Crane (cart-pendulum with spring).
 
@@ -26,50 +27,89 @@ def animate_skycrane(t, u, skip=10, save_path=None):
     x, theta = u[:, 0], u[:, 2]
     m1, m2, l, k, b, g = constants
 
+    # visual scaling: make the rod a bit shorter for clarity (render only)
+    rod_scale = 1
     px = x + l * np.sin(theta)
     py = -l * np.cos(theta)
+    px_plot = x + l * rod_scale * np.sin(theta)
+    py_plot = -l * rod_scale * np.cos(theta)
 
-    fig, ax = plt.subplots(figsize=(6, 4))
+    # Make the figure wider and more rectangular
+    fig, ax = plt.subplots(figsize=(5, 4))
     ax.set_aspect('equal')
-    ax.set_xlim(min(x) - 1.0, max(x) + 1.0)
-    ax.set_ylim(-1.5 * l, 0.8 * l)
+    ax.set_xlim(-1.2 * l * rod_scale, 1.2 * l * rod_scale)
+    # Y limits based on the (physical) pendulum length but tightened a bit
+    ax.set_ylim(-1.2 * l * rod_scale, 0.6 * l * rod_scale)
     ax.set_xlabel("X [m]")
     ax.set_ylabel("Y [m]")
-    ax.set_title("Sky Crane Simulation")
+    ax.set_title(f'Sky Crane Simulation ({title})')
 
-    wall, = ax.plot([-2, -1.8], [0, 0], 'k', lw=8)
+    # Current time
+    time_text = ax.text(
+    0.02, 0.95, "", transform=ax.transAxes,
+    fontsize=12, color="black", ha="left", va="top"
+    )
+
+    # Cart as a rectangle patch
+    cart_width = 2
+    cart_height = 1
+    cart_y = 0.05  # slight offset above y=0 so rod can attach nicely
+    cart_patch = patches.Rectangle((0, cart_y), cart_width, cart_height,
+                                   facecolor='C0', edgecolor='k', zorder=3)
+    ax.add_patch(cart_patch)
+
+    wall_x = -rod_scale * l / 2
+    wall, = ax.plot([wall_x, wall_x], [-0.5, cart_height + 0.5], 'k', lw=6)
     spring_line, = ax.plot([], [], 'gray', lw=2)
-    cart, = ax.plot([], [], 'b', lw=8)
-    rod, = ax.plot([], [], 'k-', lw=2)
-    mass, = ax.plot([], [], 'ro', ms=8)
+
+    # Rod and mass (mass rendered slightly larger)
+    rod, = ax.plot([], [], 'k-', lw=2, zorder=4)
+    mass_patch = patches.Circle((0, 0), radius=0.15, color='r', zorder=5)
+    ax.add_patch(mass_patch)
 
     def init():
-        for line in (spring_line, cart, rod, mass):
-            line.set_data([], [])
-        return spring_line, cart, rod, mass
+        # initialize visual elements at the first timestep
+        spring_line.set_data([], [])
+        rod.set_data([], [])
+        cart_patch.set_x(x[0] - cart_width / 2)
+        cart_patch.set_y(cart_y)
+        mass_patch.center = (px_plot[0], py_plot[0])
+        return spring_line, cart_patch, rod, mass_patch
 
     def update(i):
-        xi, pxi, pyi = x[i], px[i], py[i]
+        xi = x[i]
+        pxi = px[i]
+        pyi = py[i]
+        pxi_plot = px_plot[i]
+        pyi_plot = py_plot[i]
 
-        # Cart
-        cart.set_data([xi - 0.2, xi + 0.2], [0, 0])
+        # Update cart rectangle position (centered horizontally at xi)
+        cart_patch.set_x(xi - cart_width / 2)
+        cart_patch.set_y(cart_y)
 
-        # Spring (decorative)
-        s = np.linspace(-1.8, xi - 0.2, 20)
-        spring_line.set_data(s, 0.05 * np.sin(25 * np.linspace(0, 1, len(s))))
+        # Spring (decorative) - keep it anchored to the left wall and the left
+        # side of the cart visual
+        spring_height = 0.05
+        s = np.linspace(wall_x + 0.05, xi - cart_width / 2, 20)
+        spring_line.set_data(s, cart_y + cart_height/2 + spring_height * np.sin(25 * np.linspace(0, 1, len(s))))
 
-        # Pendulum
-        rod.set_data([xi, pxi], [0, pyi])
-        mass.set_data([pxi], [pyi]) 
+        # Pendulum: attach to bottom of cart visually
+        anchor_y = cart_y 
+        rod.set_data([xi, pxi_plot], [anchor_y, pyi_plot])
+        mass_patch.center = (pxi_plot, pyi_plot)
+        
+        # Current time
+        current_time = t[i]
+        time_text.set_text(f"t = {current_time:.2f} s")
 
-        return spring_line, cart, rod, mass
+        return spring_line, cart_patch, rod, mass_patch, time_text
 
     ani = FuncAnimation(
         fig,
         update,
         frames=range(0, len(t), skip),
         init_func=init,
-        interval=30,
+        interval=dt * skip * 1000,
         blit=True,
     )
 
