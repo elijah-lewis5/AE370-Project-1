@@ -1,1 +1,21 @@
-.pyc
+# Ignore compiled Python files
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+
+# Ignore environment folders
+.env/
+venv/
+.venv/
+
+# Ignore temporary or backup files
+*.log
+*.tmp
+
+# Ignore Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore OS-specific junk
+.DS_Store
+Thumbs.db
