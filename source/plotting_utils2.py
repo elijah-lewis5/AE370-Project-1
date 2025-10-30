@@ -233,3 +233,73 @@ def plot_phase_comparison(results, lengths_to_show):
     plt.legend()
     plt.tight_layout()
     plt.show()
+
+
+# ============================================================
+# Q2: Damping Sweep Plots (Stability & Settling Time)
+# ============================================================
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+def plot_settling_time_vs_b(results):
+    b = results['b']
+    ts = results['t_settle']
+    plt.figure(figsize=(6, 4))
+    plt.plot(b, ts, 'o-', linewidth=2)
+    plt.xlabel('Damping Coefficient b')
+    plt.ylabel('Settling Time t_s [s]')
+    plt.title('Settling Time vs. Damping')
+    plt.grid(True, linestyle='--', alpha=0.6)
+    plt.tight_layout()
+    plt.show()
+
+def plot_overshoot_vs_b(results):
+    b = results['b']
+    mp_th = results['overshoot_theta']
+    mp_x = results['overshoot_x']
+    plt.figure(figsize=(6, 4))
+    plt.plot(b, mp_th, 'o-', label='|θ|_{max}', linewidth=2)
+    plt.plot(b, mp_x, 's--', label='|x|_{max}', linewidth=2)
+    plt.xlabel('Damping Coefficient b')
+    plt.ylabel('Peak Overshoot')
+    plt.title('Peak Overshoot vs. Damping')
+    plt.legend()
+    plt.grid(True, linestyle='--', alpha=0.6)
+    plt.tight_layout()
+    plt.show()
+
+def plot_energy_decay_examples(results, b_list):
+    """
+    Plot normalized total energy E(t)/E(0) for selected b values.
+    """
+    plt.figure(figsize=(7, 4))
+    for b_val in b_list:
+        data = results['time_series'][float(b_val)]
+        t = data['t']; E = data['energy']
+        E0 = E[0] if E[0] != 0 else 1.0
+        plt.plot(t, E / E0, label=f'b={float(b_val):g}')
+    plt.xlabel('Time [s]')
+    plt.ylabel('Normalized Energy E(t)/E(0)')
+    plt.title('Energy Decay for Selected Damping Values')
+    plt.legend()
+    plt.grid(True, linestyle='--', alpha=0.6)
+    plt.tight_layout()
+    plt.show()
+
+def plot_phase_by_b(results, b_list):
+    """
+    x vs θ phase portraits for selected b values.
+    """
+    plt.figure(figsize=(7, 5))
+    for b_val in b_list:
+        data = results['time_series'][float(b_val)]
+        U = data['u']
+        plt.plot(U[:, 0], U[:, 2], label=f'b={float(b_val):g}')
+    plt.xlabel('Cart Position x [m]')
+    plt.ylabel('Pendulum Angle θ [rad]')
+    plt.title('Phase Portraits for Selected Damping Values')
+    plt.legend()
+    plt.grid(True, linestyle='--', alpha=0.6)
+    plt.tight_layout()
+    plt.show()
