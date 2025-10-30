@@ -218,17 +218,38 @@ def plot_phase_comparison(results, lengths_to_show):
     Plot representative x vs θ phase portraits for chosen L values.
     Accepts floats in lengths_to_show that match the sweep values.
     """
+    # --- Undamped Plot ---
     plt.figure(figsize=(7, 5))
     for L in lengths_to_show:
         key = float(L)
         data = results['time_series'][key]
         Uu = data['undamped']
-        Ud = data['damped']
-        plt.plot(Uu[:, 0], Uu[:, 2], label=f'L={key:g} m (undamped)')
-        plt.plot(Ud[:, 0], Ud[:, 2], '--', label=f'L={key:g} m (damped)')
+
+        # Undamped: solid line
+        plt.plot(Uu[:, 0], Uu[:, 2], label=f'L={key:g} m')
+
     plt.xlabel('Cart Position x [m]')
     plt.ylabel('Pendulum Angle θ [rad]')
-    plt.title('Phase Portraits for Selected Cable Lengths')
+    plt.title('Phase Portraits (Undamped)')
+    plt.grid(True, linestyle='--', alpha=0.6)
+    plt.legend()
+    plt.tight_layout()
+    plt.show()
+
+
+    # --- Damped Plot ---
+    plt.figure(figsize=(7, 5))
+    for L in lengths_to_show:
+        key = float(L)
+        data = results['time_series'][key]
+        Ud = data['damped']
+
+        # Damped: dashed line
+        plt.plot(Ud[:, 0], Ud[:, 2], label=f'L={key:g} m')
+
+    plt.xlabel('Cart Position x [m]')
+    plt.ylabel('Pendulum Angle θ [rad]')
+    plt.title('Phase Portraits (Damped)')
     plt.grid(True, linestyle='--', alpha=0.6)
     plt.legend()
     plt.tight_layout()
