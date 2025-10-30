@@ -5,12 +5,12 @@ from data.initial_conditions import constants
 
 def skycrane(u):
     x, xdot, theta, thetadot = u 
-    m1, m2, l, k, b, g = constants
+    m1, m2, L, k, b, g = constants
 
-    A = Matrix([[m1+m2, m2*l*cos(theta)],
-                [cos(theta)/l, 1]])
-    B = Matrix([[m2*l*thetadot**2*sin(theta)-k*x],
-                [-g/l * sin(theta)]])
+    A = Matrix([[m1+m2, m2*L*cos(theta)],
+                [cos(theta)/L, 1]])
+    B = Matrix([[m2*L*thetadot**2*sin(theta)-k*x],
+                [-g/L * sin(theta)]])
 
     O = A.inv() @ B
     xddot = O[0]
@@ -20,12 +20,12 @@ def skycrane(u):
 
 def skycrane_damping(u):
     x, xdot, theta, thetadot = u 
-    m1, m2, l, k, b, g = constants
+    m1, m2, L, k, b, g = constants
 
-    A = Matrix([[m1+m2, m2*l*cos(theta)],
-                [cos(theta)/l, 1]])
-    B = Matrix([[m2*l*thetadot**2*sin(theta)-k*x-b*xdot],
-                [-g/l * sin(theta)]])
+    A = Matrix([[m1+m2, m2*L*cos(theta)],
+                [cos(theta)/L, 1]])
+    B = Matrix([[m2*L*thetadot**2*sin(theta)-k*x-b*xdot],
+                [-g/L * sin(theta)]])
 
     O = A.inv() @ B
     xddot = O[0]
@@ -36,8 +36,6 @@ def skycrane_damping(u):
 # ============================================================
 # Q1: Cable Length Sweep (Damped vs Undamped) — ab3/euler friendly
 # ============================================================
-
-import numpy as np
 
 def _set_constants(new_constants):
     """
@@ -175,8 +173,6 @@ def sweep_length_effect(L_values, integrator, u0, dt, t_final, constants_base=No
 # ============================================================
 # Q2: Damping Sweep (Stability & Settling Time)
 # ============================================================
-
-import numpy as np
 
 # Reuse helpers if they already exist; otherwise define.
 try:
@@ -321,8 +317,6 @@ def sweep_damping_effect(
 # ============================================================
 # Q3: Stiffness Sweep (Oscillations & Overall Response)
 # ============================================================
-
-import numpy as np
 
 def _run_integrator_q3(integrator, f, u0, dt, t_final):
     """
@@ -476,8 +470,6 @@ def sweep_stiffness_effect(
 # ============================================================
 # Q4: Mass Sweeps (m1, m2) — Stability & Transient Behavior
 # ============================================================
-
-import numpy as np
 
 # ---- helpers (Q4-specific names to avoid conflicts) ----
 def _run_integrator_q4(integrator, f, u0, dt, t_final):
