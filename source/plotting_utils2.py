@@ -303,3 +303,169 @@ def plot_phase_by_b(results, b_list):
     plt.grid(True, linestyle='--', alpha=0.6)
     plt.tight_layout()
     plt.show()
+
+
+
+# ============================================================
+# Q3: Stiffness Sweep Plots
+# ============================================================
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+def plot_frequency_vs_k(results):
+    k = results['k']
+    plt.figure(figsize=(6,4))
+    plt.plot(k, results['freq_theta'], 'o-', label='θ dominant freq', linewidth=2)
+    plt.plot(k, results['freq_x'], 's--', label='x dominant freq', linewidth=2)
+    plt.xlabel('Spring stiffness k')
+    plt.ylabel('Dominant Frequency [Hz]')
+    plt.title('Dominant Frequency vs. Spring Stiffness')
+    plt.grid(True, linestyle='--', alpha=0.6)
+    plt.legend()
+    plt.tight_layout()
+    plt.show()
+
+def plot_amplitude_vs_k(results):
+    k = results['k']
+    plt.figure(figsize=(6,4))
+    plt.plot(k, results['theta_max'], 'o-', label='|θ|_{max}', linewidth=2)
+    plt.plot(k, results['x_max'], 's--', label='|x|_{max}', linewidth=2)
+    plt.xlabel('Spring stiffness k')
+    plt.ylabel('Peak Amplitude')
+    plt.title('Peak Amplitude vs. Spring Stiffness')
+    plt.grid(True, linestyle='--', alpha=0.6)
+    plt.legend()
+    plt.tight_layout()
+    plt.show()
+
+def plot_rms_vs_k(results):
+    k = results['k']
+    plt.figure(figsize=(6,4))
+    plt.plot(k, results['theta_rms'], 'o-', label='RMS(θ)', linewidth=2)
+    plt.plot(k, results['x_rms'], 's--', label='RMS(x)', linewidth=2)
+    plt.xlabel('Spring stiffness k')
+    plt.ylabel('RMS over tail window')
+    plt.title('RMS Response vs. Spring Stiffness')
+    plt.grid(True, linestyle='--', alpha=0.6)
+    plt.legend()
+    plt.tight_layout()
+    plt.show()
+
+def plot_phase_by_k(results, k_list):
+    plt.figure(figsize=(7,5))
+    for kval in k_list:
+        data = results['time_series'][float(kval)]
+        U = data['u']
+        plt.plot(U[:, 0], U[:, 2], label=f'k={float(kval):g}')
+    plt.xlabel('Cart Position x [m]')
+    plt.ylabel('Pendulum Angle θ [rad]')
+    plt.title('Phase Portraits for Selected Stiffness Values')
+    plt.grid(True, linestyle='--', alpha=0.6)
+    plt.legend()
+    plt.tight_layout()
+    plt.show()
+
+def plot_energy_partition_vs_k(results):
+    k = results['k']
+    plt.figure(figsize=(6,4))
+    plt.plot(k, results['energy_frac_spring'], 'o-', linewidth=2)
+    plt.xlabel('Spring stiffness k')
+    plt.ylabel(r'$\langle E_{\mathrm{spring}}\rangle / \langle E_{\mathrm{total}}\rangle$')
+    plt.title('Energy Partition vs. Spring Stiffness')
+    plt.grid(True, linestyle='--', alpha=0.6)
+    plt.tight_layout()
+    plt.show()
+
+
+
+# ============================================================
+# Q4: Mass Sweep Plots (m1, m2)
+# ============================================================
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+def _x_label_for_param(param):
+    return r'Rover mass $m_2$' if param == 'm2' else r'Crane mass $m_1$'
+
+def plot_frequency_vs_mass(results):
+    x = results['values']; param = results['param']
+    plt.figure(figsize=(6,4))
+    plt.plot(x, results['freq_theta'], 'o-', label='θ dominant freq', linewidth=2)
+    plt.plot(x, results['freq_x'], 's--', label='x dominant freq', linewidth=2)
+    plt.xlabel(_x_label_for_param(param))
+    plt.ylabel('Dominant Frequency [Hz]')
+    plt.title(f'Dominant Frequency vs. {param}')
+    plt.grid(True, linestyle='--', alpha=0.6)
+    plt.legend()
+    plt.tight_layout()
+    plt.show()
+
+def plot_overshoot_vs_mass(results):
+    x = results['values']; param = results['param']
+    plt.figure(figsize=(6,4))
+    plt.plot(x, results['overshoot_theta'], 'o-', label='θ percent overshoot', linewidth=2)
+    plt.plot(x, results['overshoot_x'], 's--', label='x percent overshoot', linewidth=2)
+    plt.xlabel(_x_label_for_param(param))
+    plt.ylabel('Percent Overshoot (relative to initial)')
+    plt.title(f'Peak Overshoot vs. {param}')
+    plt.grid(True, linestyle='--', alpha=0.6)
+    plt.legend()
+    plt.tight_layout()
+    plt.show()
+
+def plot_rms_vs_mass(results):
+    x = results['values']; param = results['param']
+    plt.figure(figsize=(6,4))
+    plt.plot(x, results['theta_rms'], 'o-', label='RMS(θ)', linewidth=2)
+    plt.plot(x, results['x_rms'], 's--', label='RMS(x)', linewidth=2)
+    plt.xlabel(_x_label_for_param(param))
+    plt.ylabel('RMS over tail window')
+    plt.title(f'RMS Response vs. {param}')
+    plt.grid(True, linestyle='--', alpha=0.6)
+    plt.legend()
+    plt.tight_layout()
+    plt.show()
+
+def plot_phase_by_mass(results, values_list):
+    param = results['param']
+    plt.figure(figsize=(7,5))
+    for val in values_list:
+        data = results['time_series'][float(val)]
+        U = data['u']
+        plt.plot(U[:, 0], U[:, 2], label=f'{param}={float(val):g}')
+    plt.xlabel('Cart Position x [m]')
+    plt.ylabel('Pendulum Angle θ [rad]')
+    plt.title(f'Phase Portraits for Selected {param} values')
+    plt.grid(True, linestyle='--', alpha=0.6)
+    plt.legend()
+    plt.tight_layout()
+    plt.show()
+
+def plot_energy_decay_examples_mass(results, values_list):
+    param = results['param']
+    plt.figure(figsize=(7,4))
+    for val in values_list:
+        data = results['time_series'][float(val)]
+        t = data['t']; E = data['energy']
+        E0 = E[0] if E[0] != 0 else 1.0
+        plt.plot(t, E/E0, label=f'{param}={float(val):g}')
+    plt.xlabel('Time [s]')
+    plt.ylabel('Normalized Energy E(t)/E(0)')
+    plt.title(f'Energy Decay for Selected {param} values')
+    plt.grid(True, linestyle='--', alpha=0.6)
+    plt.legend()
+    plt.tight_layout()
+    plt.show()
+
+def plot_zeta_vs_mass(results):
+    x = results['values']; param = results['param']
+    plt.figure(figsize=(6,4))
+    plt.plot(x, results['zeta_eff'], 'o-', linewidth=2)
+    plt.xlabel(_x_label_for_param(param))
+    plt.ylabel(r'Effective damping ratio $\zeta_{\mathrm{eff}} = \dfrac{b}{2\sqrt{k(m_1+m_2)}}$')
+    plt.title(f'Effective Damping Ratio vs. {param}')
+    plt.grid(True, linestyle='--', alpha=0.6)
+    plt.tight_layout()
+    plt.show()
