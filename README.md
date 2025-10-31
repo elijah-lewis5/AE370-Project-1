@@ -18,7 +18,8 @@ This project is designed for AE370 Project 1. The project is implemented in Pyth
 - Required Python libraries (install using `pip install -r requirements.txt`).
 
 ## Notes
-- Ensure all files are in the provided structure (in `main.ipynb`) before running the notebook.
+- Ensure all files are in the provided structure (written in `main.ipynb`) before running the notebook.
+- To change constants and initial conditions, follow instructions in cell labeled `Initial Conditions and Constants` in `main.ipynb`.
 
 ## License
 This project is for educational purposes only.

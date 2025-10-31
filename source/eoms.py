@@ -41,19 +41,19 @@ def skycrane_damping(u):
     udot = np.array([xdot, xddot, thetadot, thetaddot])
     return udot
 
-# Analysis and helper functions to answer the questions
-
-# ============================================================
-# Q1: Cable Length Sweep (Damped vs Undamped) — ab3/euler friendly
-# ============================================================
-
-def _set_constants(new_constants):
+def set_constants(new_constants):
     """
     Update the module-level 'constants' tuple so skycrane() and
     skycrane_damping() pick up the current (m1, m2, L, k, b, g).
     """
     global constants
     constants = new_constants
+
+# Analysis and helper functions to answer the questions
+
+# ============================================================
+# Q1: Cable Length Sweep (Damped vs Undamped) — ab3/euler friendly
+# ============================================================
 
 def _measure_frequency(theta, t):
     """
@@ -132,7 +132,7 @@ def sweep_length_effect(L_values, integrator, u0, dt, t_final, constants_base=No
 
     for L in L_values:
         # update constants so EOM functions use this L
-        _set_constants((m1, m2, float(L), k, b, g))
+        set_constants((m1, m2, float(L), k, b, g))
 
                 # Detect output order (ab3_solve returns U, T; Euler returns T, U)
         out_und = _run_integrator(skycrane, u0, dt, t_final)
@@ -176,7 +176,7 @@ def sweep_length_effect(L_values, integrator, u0, dt, t_final, constants_base=No
     }
 
     # restore original constants
-    _set_constants((m1, m2, L0, k, b, g))
+    set_constants((m1, m2, L0, k, b, g))
     return results
 
 
@@ -289,7 +289,7 @@ def sweep_damping_effect(
     series = {}
 
     for b_val in b_values:
-        _set_constants((m1, m2, L, k, float(b_val), g))
+        set_constants((m1, m2, L, k, float(b_val), g))
         # Run damped model
         t, U = _run_integrator(skycrane_damping, u0, dt, t_final, integrator=integrator)
 
@@ -304,7 +304,7 @@ def sweep_damping_effect(
         series[float(b_val)] = {'t': t, 'u': U, 'energy': E}
 
     # restore
-    _set_constants((m1, m2, L, k, b0, g))
+    set_constants((m1, m2, L, k, b0, g))
 
     return {
         'b': np.asarray(b_values, dtype=float),
@@ -348,9 +348,9 @@ def _rms_over_window(y, frac_window=0.5):
 
 # Fallbacks if earlier helpers are not present (safe no-ops if already defined)
 try:
-    _set_constants
+    set_constants
 except NameError:
-    def _set_constants(new_constants):
+    def set_constants(new_constants):
         global constants
         constants = new_constants
 
@@ -419,7 +419,7 @@ def sweep_stiffness_effect(
     series = {}
 
     for kval in k_values:
-        _set_constants((m1, m2, L, float(kval), b, g))
+        set_constants((m1, m2, L, float(kval), b, g))
 
         # Use DAMPED model for overall response behavior
         t, U = _run_integrator_q3(integrator, skycrane_damping, u0, dt, t_final)
@@ -453,7 +453,7 @@ def sweep_stiffness_effect(
         series[float(kval)] = {'t': t, 'u': U}
 
     # restore baseline constants
-    _set_constants((m1, m2, L, k0, b, g))
+    set_constants((m1, m2, L, k0, b, g))
 
     return {
         'k': np.asarray(k_values, dtype=float),
@@ -520,11 +520,11 @@ def _zeta_eff_q4(k, b, m1, m2):
     wn = np.sqrt(k / M)
     return b / (2.0 * M * wn)  # = b / (2*sqrt(k*M))
 
-# Reuse _set_constants if present; else define
+# Reuse set_constants if present; else define
 try:
-    _set_constants
+    set_constants
 except NameError:
-    def _set_constants(new_constants):
+    def set_constants(new_constants):
         global constants
         constants = new_constants
 
@@ -583,7 +583,7 @@ def sweep_mass_effects(
         else:
             raise ValueError("mode must be 'm1' or 'm2'")
 
-        _set_constants((m1, m2, L, k, b, g))
+        set_constants((m1, m2, L, k, b, g))
         t, U = _run_integrator_q4(integrator, skycrane_damping, u0, dt, t_final)
 
         # Frequencies
@@ -609,7 +609,7 @@ def sweep_mass_effects(
         series[float(val)] = {'t': t, 'u': U, 'energy': E}
 
     # restore baseline
-    _set_constants((m1_0, m2_0, L, k, b, g))
+    set_constants((m1_0, m2_0, L, k, b, g))
 
     return {
         'param': mode,
