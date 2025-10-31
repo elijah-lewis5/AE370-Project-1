@@ -4,7 +4,7 @@ from matplotlib.animation import FuncAnimation
 import matplotlib.patches as patches
 from data.initial_conditions import constants
 
-def animate_skycrane(t, u, dt, skip = 10, save_path=None, title = ''):
+def animate_skycrane(t, u, dt, interval = 50, skip = 10, save_path=None, title = ''):
     """
     Animate the Sky Crane (cart-pendulum with spring).
 
@@ -109,7 +109,7 @@ def animate_skycrane(t, u, dt, skip = 10, save_path=None, title = ''):
         update,
         frames=range(0, len(t), skip),
         init_func=init,
-        interval=dt * skip * 1000,
+        interval= 20,
         blit=True,
     )
 
